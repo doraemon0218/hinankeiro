@@ -5,6 +5,7 @@
 
 import type { TrainingLog, TrainingLogCreate, ExportOptions, RouteResult, TrajectoryPoint } from '../../shared/types';
 import { prisma } from '../db/client';
+import type { Prisma } from '@prisma/client';
 
 /** Prisma の 1 行 → TrainingLog */
 function rowToTrainingLog(row: {
@@ -79,14 +80,15 @@ export async function getTrainingLogs(options: {
   scenarioId?: string;
   limit?: number;
 }): Promise<TrainingLog[]> {
-  const where: Parameters<typeof prisma.trainingLog.findMany>[0]['where'] = {};
+  const where: Prisma.TrainingLogWhereInput = {};
 
   if (options.userId) where.userId = options.userId;
   if (options.scenarioId) where.scenarioId = options.scenarioId;
   if (options.from ?? options.to) {
-    where.createdAt = {};
-    if (options.from) (where.createdAt as Record<string, string>).gte = options.from;
-    if (options.to) (where.createdAt as Record<string, string>).lte = options.to;
+    where.createdAt = {
+      ...(options.from && { gte: options.from }),
+      ...(options.to && { lte: options.to }),
+    };
   }
 
   const rows = await prisma.trainingLog.findMany({
