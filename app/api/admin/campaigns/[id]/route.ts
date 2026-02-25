@@ -6,6 +6,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { IncentiveCampaignCreate } from '@/shared/types';
 import { getCampaignById, updateCampaign, deleteCampaign } from '@/lib/admin/campaigns';
 
+/** 静的エクスポート用（GitHub Pages）。1件だけ生成してビルドを通す */
+export function generateStaticParams() {
+  return [{ id: '_' }];
+}
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

@@ -24,7 +24,7 @@ export default function AdminIncentivesPage() {
         const fromStr = from.toISOString().slice(0, 10);
         Promise.all(
           list.map((c) =>
-            fetch(`/api/admin/campaigns/${c.id}/target-count?from=${fromStr}&to=${to}`)
+            fetch(`/api/admin/campaigns/target-count?id=${encodeURIComponent(c.id)}&from=${fromStr}&to=${to}`)
               .then((r) => r.json())
               .then((data: { count: number }) => ({ id: c.id, count: data.count }))
           )
