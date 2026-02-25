@@ -35,6 +35,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     const id = getOrCreateUserId();
@@ -49,6 +50,7 @@ export default function ProfilePage() {
           setMobilityCapability(d.mobilityCapability ?? 'walk');
         }
       })
+      .catch(() => { /* デモ環境などでAPIが無い場合は無視 */ })
       .finally(() => setLoading(false));
   }, []);
 
@@ -56,22 +58,40 @@ export default function ProfilePage() {
     e.preventDefault();
     setSaving(true);
     setSaved(false);
+    setSaveError(null);
+    const uid = userId || getOrCreateUserId();
+    if (!uid) {
+      setSaveError('ユーザーIDを取得できませんでした。');
+      setSaving(false);
+      return;
+    }
+    if (!userId) setUserId(uid);
     fetch('/api/user/demographics', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId,
+        userId: uid,
         age: age === '' ? undefined : age,
         gender,
         mobilityCapability,
       }),
     })
       .then((r) => {
-        if (!r.ok) throw new Error('保存に失敗しました');
+        if (!r.ok) {
+          if (r.status === 404) throw new Error('demo');
+          throw new Error('保存に失敗しました');
+        }
         return r.json();
       })
       .then(() => setSaved(true))
-      .catch(() => setSaved(false))
+      .catch((err: Error) => {
+        setSaved(false);
+        setSaveError(
+          err.message === 'demo'
+            ? 'このページはデモ環境のため保存できません。ローカルで npm run dev を実行すると保存できます。'
+            : '保存に失敗しました。しばらくしてから再度お試しください。'
+        );
+      })
       .finally(() => setSaving(false));
   }
 
@@ -141,7 +161,21 @@ export default function ProfilePage() {
         >
           {saving ? '保存中…' : '保存する'}
         </button>
-        {saved && <p style={{ color: '#0a0' }}>保存しました。</p>}
+        {saveError && (
+          <p style={{ color: '#c00', fontSize: '0.9rem' }} role="alert">
+            {saveError}
+          </p>
+        )}
+        {saved && (
+          <div style={{ padding: '1rem', background: '#e8f5e9', borderRadius: 8 }}>
+            <p style={{ color: '#2e7d32', fontWeight: 600 }}>保存しました。</p>
+            <p style={{ marginTop: '0.5rem', fontSize: '0.95rem' }}>
+              <Link href="/" style={{ color: '#0d6efd', fontWeight: 600 }}>
+                トップへ戻る →
+              </Link>
+            </p>
+          </div>
+        )}
       </form>
     </main>
   );
