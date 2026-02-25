@@ -13,8 +13,10 @@ export const RANK_DEFINITIONS = [
 
 export type RankId = (typeof RANK_DEFINITIONS)[number]['id'];
 
-export function getRankForTrainings(totalTrainings: number): (typeof RANK_DEFINITIONS)[number] {
-  let current = RANK_DEFINITIONS[0];
+export type Rank = (typeof RANK_DEFINITIONS)[number];
+
+export function getRankForTrainings(totalTrainings: number): Rank {
+  let current: Rank = RANK_DEFINITIONS[0];
   for (const rank of RANK_DEFINITIONS) {
     if (totalTrainings >= rank.minTrainings) current = rank;
   }
