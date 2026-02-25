@@ -28,7 +28,7 @@ jobs:
       - run: npm ci
       - run: npx prisma generate
       - run: npm run build:gh-pages
-      - uses: actions/upload-pages-artifact@3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: out
 
@@ -40,4 +40,4 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - id: deploy
-        uses: actions/deploy-pages@4
+        uses: actions/deploy-pages@v4
