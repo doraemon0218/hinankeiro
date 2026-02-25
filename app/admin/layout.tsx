@@ -15,10 +15,12 @@ export default function AdminLayout({
         }}
       >
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <Link href="/admin" style={{ fontWeight: 700, fontSize: '1.1rem' }}>
-            ひなんけいろ 行政ダッシュボード
+          <Link href="/" style={{ fontWeight: 700, fontSize: '1.1rem' }}>
+            ひなんけいろ
           </Link>
-          <nav style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <span style={{ color: '#666', fontSize: '0.9rem' }}>行政ダッシュボード</span>
+          <nav style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginLeft: 'auto' }}>
+            <Link href="/" style={{ color: '#666', fontSize: '0.9rem' }}>トップへ</Link>
             <Link href="/admin" style={{ color: '#0d6efd' }}>概要</Link>
             <Link href="/admin/logs" style={{ color: '#333' }}>訓練ログ監視</Link>
             <Link href="/admin/data" style={{ color: '#333' }}>生活拠点・運動能力</Link>
