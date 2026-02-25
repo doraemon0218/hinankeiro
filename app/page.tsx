@@ -10,11 +10,16 @@ export default function HomePage() {
       <p style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
         開発中です。複数エージェントで並行開発する場合は <code>AGENTS.md</code> を参照してください。
       </p>
-      <p style={{ marginTop: '1.5rem' }}>
+      <nav style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         <Link href="/profile" style={{ color: '#0d6efd', fontWeight: 600 }}>
           あなたの情報を登録（年齢・性別・移動の状況）
         </Link>
-        … 訓練インセンティブの対象判定に利用します。
+        <Link href="/admin" style={{ color: '#0d6efd', fontWeight: 600 }}>
+          行政向けダッシュボード（集計・インセンティブ・ログ）
+        </Link>
+      </nav>
+      <p style={{ marginTop: '1.5rem', fontSize: '0.85rem', color: '#888' }}>
+        このページが GitHub Pages で表示されている場合、保存・集計などの API は動作しません（見た目デモのみ）。
       </p>
     </main>
   );
