@@ -1,0 +1,60 @@
+// ひなんけいろ - 訓練ログ用スキーマ（Agent B）
+// shared/types.ts の TrainingLog に合わせる
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model TrainingLog {
+  id                         String   @id @default(cuid())
+  userId                     String   // 匿名ID or 認証済みユーザーID
+  scenarioId                 String
+  routeCoordinates           String   // JSON: LatLng[] (計画経路)
+  routeDurationSeconds       Int      // 計画所要時間（秒）
+  routeDistanceMeters        Float    // 計画距離（メートル）
+  startedAt                  String   // ISO8601
+  finishedAt                 String   // ISO8601
+  evacuatedInTime            Boolean  // 津波到達前に避難完了したか
+  consentToShareWithGovernment Boolean // 行政共有の同意
+  transportMode              String   // walk | wheelchair | crutch | other
+  actualTrajectory           String   // JSON: TrajectoryPoint[] (実移動軌跡)
+  actualDistanceMeters       Float    // 軌跡から算出した実距離（m）
+  actualDurationSeconds      Int      // 軌跡から算出した実所要時間（秒）
+  createdAt                  String   // ISO8601
+
+  @@index([userId])
+  @@index([scenarioId])
+  @@index([createdAt])
+}
+
+// 住民の初回入力属性（年齢・性別・移動能力）。インセンティブ対象判定に利用（Agent C 収集 / Agent D 参照）
+model UserDemographics {
+  id                String   @id @default(cuid())
+  userId            String   @unique // 匿名ID or 認証ユーザーID
+  age               Int?     // 年齢（歳）
+  gender            String?  // male | female | other
+  mobilityCapability String? // walk | run | bicycle | car | cane | wheelchair | bedridden
+  updatedAt         String   // ISO8601
+
+  @@index([userId])
+}
+
+// 訓練インセンティブキャンペーン（行政が地域・年齢・性別・時間・当選確率で設定）（Agent D）
+model IncentiveCampaign {
+  id            String   @id @default(cuid())
+  name          String   // キャンペーン名
+  description   String?  // 説明文
+  targeting     String   // JSON: IncentiveCampaignTargeting
+  reward        String   // JSON: IncentiveReward
+  condition     String   // JSON: IncentiveCondition
+  budgetLimits  String?  // JSON: IncentiveBudgetLimits（当選確率・付与上限）
+  createdAt     String   // ISO8601
+  updatedAt     String   // ISO8601
+
+  @@index([createdAt])
+}

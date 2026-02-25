@@ -1,0 +1,12 @@
+---
+description: ひなんけいろの複数エージェント並行開発ルール
+alwaysApply: true
+---
+
+# ひなんけいろ - エージェント開発ルール
+
+- **設計**: `docs/ARCHITECTURE.md` と `docs/TECH_STACK.md` を参照し、一貫した設計で実装する。
+- **型**: 共通型は `shared/types.ts` にのみ定義する。他では import して使う。
+- **役割**: `AGENTS.md` の役割分担に従い、担当外のディレクトリを変更する場合はインターフェース（型・API）を壊さない。
+- **API**: 訓練ログの保存・取得・エクスポートの仕様は `shared/types.ts` の `TrainingLog`, `TrainingLogCreate`, `ExportOptions` に合わせる。
+- **言語**: コメント・README・UI 文言は日本語でよい。変数名・関数名は英語推奨。
